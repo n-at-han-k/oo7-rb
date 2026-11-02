@@ -5,7 +5,7 @@
 
 require "rb_sys/extensiontask"
 
-GEMSPEC = Gem::Specification.load("oo7.gemspec")
+GEMSPEC = Gem::Specification.load("oo7-rb.gemspec")
 
 # Compiles ext/oo7, the Rust crate over oo7, into lib/oo7/oo7.so.
 #

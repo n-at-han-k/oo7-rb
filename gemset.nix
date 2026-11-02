@@ -30,7 +30,7 @@
     };
     version = "2.2.1";
   };
-  oo7 = {
+  oo7-rb = {
     dependencies = ["gem_kit" "rb_sys"];
     groups = ["default"];
     platforms = [];

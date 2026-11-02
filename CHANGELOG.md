@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- The gem is published as `oo7-rb` rather than `oo7`. RubyGems holds `oo7` for
+  an unrelated `OO7` with indexed versions, and it refuses a name that differs
+  from an existing one only in case. The library, the module and the require
+  path are all still `oo7`; `require "oo7-rb"` is a shim onto it so that
+  `Bundler.require` resolves.
 - Every method is synchronous. The crate's API is async throughout; each
   binding drives it to completion on a Tokio runtime owned by the extension.
   The runtime is multi-threaded with one worker rather than current-thread,

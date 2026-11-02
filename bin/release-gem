@@ -58,8 +58,8 @@ require "fileutils"
 require "open3"
 
 local_version = Oo7::VERSION
-gem_name = "oo7"
-gemspec = "oo7.gemspec"
+gem_name = "oo7-rb"
+gemspec = "oo7-rb.gemspec"
 workflow = "cross-compile.yml"
 pkg_dir = "pkg"
 

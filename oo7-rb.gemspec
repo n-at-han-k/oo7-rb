@@ -6,7 +6,7 @@
 require_relative "lib/oo7/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "oo7"
+  spec.name = "oo7-rb"
   spec.version = Oo7::VERSION
   spec.authors = ["Nathan Kidd"]
   spec.email = ["nathankidd@hey.com"]

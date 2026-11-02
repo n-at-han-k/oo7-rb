@@ -15,7 +15,7 @@
 
         gemspecFiles = pkgs.runCommand "oo7-gemspec" { } ''
           mkdir -p $out/lib/oo7
-          cp ${./oo7.gemspec}         $out/oo7.gemspec
+          cp ${./oo7-rb.gemspec}         $out/oo7-rb.gemspec
           cp ${./lib/oo7/version.rb}  $out/lib/oo7/version.rb
         '';
 

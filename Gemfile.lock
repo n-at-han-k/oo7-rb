@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    oo7 (1.0.0)
+    oo7-rb (1.0.0)
       gem_kit (~> 0.2)
       rb_sys (~> 0.9)
 
@@ -29,7 +29,7 @@ PLATFORMS
 DEPENDENCIES
   gem_kit-release
   lefthook (~> 2.2)
-  oo7!
+  oo7-rb!
   rake-compiler (~> 1.3)
   sus
 

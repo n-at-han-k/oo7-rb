@@ -17,6 +17,18 @@ That matters when a bug in those libraries is not yours to fix. A plain
 shell that prompted for it, but when it can, the way out is to stop going
 through them.
 
+## Installation
+
+```ruby
+gem "oo7-rb"
+```
+
+The gem is `oo7-rb`; the library is `oo7`. RubyGems holds the name `oo7` for an
+unrelated `OO7`, and a name differing only in case cannot be taken once the
+other has indexed versions -- so the gem took the repository's name instead.
+`require "oo7"` is the one to write, and `require "oo7-rb"` also works so that
+`Bundler.require` needs no `require:` of its own.
+
 ## Usage
 
 ```ruby

@@ -14,7 +14,7 @@ on:
       - 'ext/**'
       - 'Cargo.toml'
       - 'Cargo.lock'
-      - 'oo7.gemspec'
+      - 'oo7-rb.gemspec'
       - 'Rakefile'
       - '.github/workflows/cross-compile.yml'
       # The loader and the version live here, and the version is what the platform gems are
