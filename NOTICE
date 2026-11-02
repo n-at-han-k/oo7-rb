@@ -1,0 +1,43 @@
+Oo7 for Ruby
+Copyright 2026 General Intelligence Systems
+
+--------------------------------------------------------------------------------
+oo7
+--------------------------------------------------------------------------------
+
+The native extension under ext/oo7 links oo7, the Rust implementation of the
+freedesktop Secret Service API. This gem is bindings for it and nothing else:
+every class it defines wraps a type of that crate.
+
+  https://github.com/bilelmoussaoui/oo7
+  Copyright 2022-2026 Bilal Elmoussaoui and the oo7 contributors
+  Licensed under the MIT License
+
+The MIT License permits this use and asks that its notice travel with the
+software, which this file carries on its behalf. oo7 ships no NOTICE file of
+its own.
+
+--------------------------------------------------------------------------------
+Secret Service
+--------------------------------------------------------------------------------
+
+The protocol these bindings speak is the freedesktop Secret Service
+specification. It is a specification rather than code, and nothing of it is
+included here.
+
+  https://specifications.freedesktop.org/secret-service-spec/
+
+--------------------------------------------------------------------------------
+On Fractal
+--------------------------------------------------------------------------------
+
+Fractal is a GTK Matrix client, and the reason this binding exists: it drives
+oo7 rather than libsecret, and reading it shows which operations a session
+store needs -- unlock the collection, search by attribute, unlock each item.
+
+It appears in no part of this product. It is licensed GPL-3.0-or-later, which
+is incompatible with the Apache License this work is distributed under, so no
+code or comment may be copied from it. Reading it to learn which operations a
+flow needs is fine; carrying its expression across is not.
+
+  https://gitlab.gnome.org/World/fractal

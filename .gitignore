@@ -1,0 +1,11 @@
+/.bundle/
+/pkg/
+/target/
+/tmp/
+/vendor/
+
+# `rake compile` installs the built object beside the library, which belongs to this machine's Ruby.
+/lib/oo7/*.so
+/lib/oo7/*.bundle
+/lib/oo7/*.dll
+*.gem

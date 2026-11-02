@@ -1,0 +1,19 @@
+[package]
+name = "oo7"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+name = "oo7"
+crate-type = ["cdylib"]
+
+[dependencies]
+magnus = "0.9"
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "time", "net"] }
+
+[dependencies.oo7_core]
+package = "oo7"
+version = "0.6"
+default-features = false
+features = ["native_crypto", "tokio"]

@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+# TEST(1)                            General Commands Manual                          TEST(1)
+#
+# NAME
+#      bin/test — compile the extension and run the suite against it
+#
+# SYNOPSIS
+#      bin/test [--skip-compile] [path ...]
+#
+# DESCRIPTION
+#      Compiles ext/oo7 into lib/oo7/oo7.so with rake, then runs sus over
+#      the suite.  There is nothing to test without the object: every class this gem exposes
+#      belongs to the crate, so a stale or missing .so is the one failure worth ruling out
+#      before reading any other.
+#
+#      With --skip-compile it runs sus alone, which is what you want while iterating on a
+#      test rather than on the crate.  A change to anything under ext/ needs the compile.
+#
+#      Remaining arguments are passed to sus, so one file or one directory works here.
+#
+# FILES
+#      Rakefile
+#              The RbSys::ExtensionTask which `rake compile` drives.
+#
+#      lib/oo7/oo7.so
+#              What the compile produces, and what lib/oo7.rb requires.
+#
+# EXIT STATUS
+#      The bin/test utility exits 0 on success, and >0 if an error occurs.
+#
+# EXAMPLES
+#      Compile and run everything:
+#
+#            bin/test
+#
+#      Run one file against the object already built:
+#
+#            bin/test --skip-compile test/oo7/account.rb
+#
+# SEE ALSO
+#      bin/rubocop(1), rake(1), sus(1)
+#
+# oo7                             October 12, 2026                              TEST(1)
+
+set -o errexit
+set -o nounset
+
+root="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$root"
+
+compile=1
+
+if [ "${1:-}" = "--skip-compile" ]; then
+  compile=0
+  shift
+fi
+
+if [ "$compile" -eq 1 ]; then
+  bundle exec rake compile
+fi
+
+bundle exec sus "$@"
