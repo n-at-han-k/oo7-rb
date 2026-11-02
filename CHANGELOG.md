@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-02
+
+### Fixed
+
+- The GVL is released while a call waits, via `rb_thread_call_without_gvl`.
+  Every method previously held it for the whole D-Bus round trip, so a worker
+  thread blocked the main thread too -- the GVL is global -- and a GTK
+  application could not keep its main loop answering by moving the call off it.
+  It froze instead, and took the desktop with it, which is the thing this gem
+  exists to avoid. magnus 0.9 does not bind that function, so the crate declares
+  it.
+- `test/oo7/concurrency.rb` checks it by behaviour rather than by inspection: a
+  second Ruby thread has to make progress while a keyring call is in flight.
+  With the GVL held it records zero ticks, so the test fails if the release is
+  ever lost again.
+
+### Changed
+
+- The version file moved to `lib/oo7/rb/version.rb`. gem_kit-release derives the
+  path from the gem name, and "oo7-rb" nests as oo7/rb. `Oo7::VERSION` is
+  unchanged, as is `require "oo7"`.
+
 ## [1.0.0] - 2026-11-02
 
 ### Added

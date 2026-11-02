@@ -3,7 +3,7 @@
 # Released under the Apache License, Version 2.0.
 # Copyright, 2026, by General Intelligence Systems.
 
-require_relative "oo7/version"
+require_relative "oo7/rb/version"
 
 # The native extension, which is where every class in this module is defined.
 #

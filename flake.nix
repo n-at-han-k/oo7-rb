@@ -14,9 +14,9 @@
         lib = mine.lib.${system};
 
         gemspecFiles = pkgs.runCommand "oo7-gemspec" { } ''
-          mkdir -p $out/lib/oo7
+          mkdir -p $out/lib/oo7/rb
           cp ${./oo7-rb.gemspec}         $out/oo7-rb.gemspec
-          cp ${./lib/oo7/version.rb}  $out/lib/oo7/version.rb
+          cp ${./lib/oo7/rb/version.rb}  $out/lib/oo7/rb/version.rb
         '';
 
         gems = pkgs.bundlerEnv {

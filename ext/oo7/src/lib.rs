@@ -14,9 +14,13 @@
 //!
 //! Every method on the crate is async. Each binding drives it to completion on a
 //! Tokio runtime owned by this extension and returns the result, so the Ruby API
-//! is ordinary and synchronous. The calling thread is blocked while it waits and
-//! the GVL is held, so a keyring call should not be made from a thread that
-//! something else is waiting on -- on a GTK main loop, put it on a Ruby thread.
+//! is ordinary and synchronous.
+//!
+//! The calling thread waits, but it waits with the GVL released, so every other
+//! Ruby thread keeps running. That is what lets a GTK application put a keyring
+//! call on a worker thread and keep its main loop answering: without it the
+//! worker would hold the GVL throughout and freeze the main thread anyway, which
+//! is a frozen desktop rather than a slow one.
 //!
 //! # Provenance
 //!
@@ -28,6 +32,7 @@
 //!   - <https://gitlab.gnome.org/World/fractal> (GPL-3.0-or-later; read only)
 
 use std::collections::HashMap;
+use std::ffi::c_void;
 use std::future::Future;
 use std::sync::OnceLock;
 
@@ -59,8 +64,73 @@ fn runtime() -> Result<&'static Runtime, Error> {
         .map_err(rt_err)
 }
 
+// Ruby's public C API, which magnus 0.9 does not bind (its list carries
+// rb_thread_call_without_gvl commented out). Declared here rather than reached
+// for through rb-sys' generated bindings, which depend on what bindgen picked up
+// from this Ruby's headers.
+unsafe extern "C" {
+    fn rb_thread_call_without_gvl(
+        func: extern "C" fn(*mut c_void) -> *mut c_void,
+        data1: *mut c_void,
+        ubf: Option<extern "C" fn(*mut c_void)>,
+        data2: *mut c_void,
+    ) -> *mut c_void;
+}
+
+/// Run `work` with the GVL released.
+///
+/// This is the whole reason a Ruby thread can be used to keep a keyring call off
+/// a GTK main loop. The GVL is global: a worker thread that blocks inside an
+/// extension still holding it stops every other Ruby thread, the main one
+/// included, so offloading the call would otherwise buy nothing at all.
+///
+/// `work` must not touch Ruby -- no values, no exceptions, no allocation through
+/// the VM -- because this thread does not hold the GVL while it runs. Driving a
+/// future over D-Bus touches only Rust, which is what makes it eligible.
+///
+/// The unblocking function is None, so the call is not interruptible: a D-Bus
+/// round trip that never answers cannot be killed by Thread#kill. That is the
+/// trade for not blocking the VM, and it is the right way round for a UI, where
+/// the alternative is a frozen desktop.
+fn without_gvl<F, T>(work: F) -> T
+where
+    F: FnOnce() -> T,
+{
+    struct Payload<F, T> {
+        work: Option<F>,
+        out: Option<T>,
+    }
+
+    extern "C" fn call<F, T>(data: *mut c_void) -> *mut c_void
+    where
+        F: FnOnce() -> T,
+    {
+        // Safe: the pointer is the Payload below, alive for the whole call, and
+        // reached from this one thread only.
+        let payload = unsafe { &mut *data.cast::<Payload<F, T>>() };
+        let work = payload.work.take().expect("the work runs once");
+        payload.out = Some(work());
+        std::ptr::null_mut()
+    }
+
+    let mut payload = Payload { work: Some(work), out: None };
+
+    unsafe {
+        rb_thread_call_without_gvl(
+            call::<F, T>,
+            (&raw mut payload).cast::<c_void>(),
+            None,
+            std::ptr::null_mut(),
+        );
+    }
+
+    payload.out.expect("the work ran")
+}
+
 fn block<F: Future>(future: F) -> Result<F::Output, Error> {
-    Ok(runtime()?.block_on(future))
+    let runtime = runtime()?;
+
+    Ok(without_gvl(|| runtime.block_on(future)))
 }
 
 /// A Ruby hash of strings, which is what the Secret Service calls attributes.
