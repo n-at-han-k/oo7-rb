@@ -9,7 +9,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     gem_kit (0.2.0)
-    gem_kit-release (0.3.2)
+    gem_kit-release (0.3.3)
       gem_kit (>= 0.1, < 1.0)
       thor (~> 1.3)
     lefthook (2.2.1)

@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+# Released under the Apache License, Version 2.0.
+# Copyright, 2026, by General Intelligence Systems.
+
+source "https://rubygems.org"
+
+# The GTK bindings, which is all this example needs from a gem. oo7 itself comes
+# from the repository above rather than from RubyGems: the flake puts ../../lib on
+# RUBYLIB, so `require "oo7"` loads the extension `rake compile` built, and the
+# example exercises the working tree rather than the last release.
+gem "gtk4"

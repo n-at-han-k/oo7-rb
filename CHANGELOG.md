@@ -23,12 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   With the GVL held it records zero ticks, so the test fails if the release is
   ever lost again.
 
-### Changed
-
-- The version file moved to `lib/oo7/rb/version.rb`. gem_kit-release derives the
-  path from the gem name, and "oo7-rb" nests as oo7/rb. `Oo7::VERSION` is
-  unchanged, as is `require "oo7"`.
-
 ## [1.0.0] - 2026-11-02
 
 ### Added
