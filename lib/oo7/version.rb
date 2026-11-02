@@ -4,5 +4,5 @@
 # Copyright, 2026, by General Intelligence Systems.
 
 module Oo7
-  VERSION = "0.1.0"
+  VERSION = "1.0.0"
 end

@@ -47,12 +47,31 @@ jobs:
       fail-fast: false
       matrix:
         platform: ${{ fromJSON(needs.ci-data.outputs.result).supported-ruby-platforms }}
-        # x64-mingw32 is the legacy Windows toolchain used only by Ruby <= 3.0.
-        # We require Ruby >= 3.3, which uses x64-mingw-ucrt (built above), so
-        # rake-compiler never registers a native:x64-mingw32 task and the job
-        # would always fail. Drop it.
         exclude:
+          # Applies to any gem built from this repository: x64-mingw32 is the
+          # legacy Windows toolchain used only by Ruby <= 3.0. We require
+          # >= 3.3, which uses x64-mingw-ucrt, so rake-compiler never registers
+          # a native:x64-mingw32 task and the job would always fail.
           - platform: x64-mingw32
+
+          # --- oo7-specific; delete these two lines in a gem that is not this
+          # one, and Windows builds come back ------------------------------
+          #
+          # The Secret Service is a freedesktop D-Bus API, so there is nothing
+          # on Windows for *this* gem to bind. oo7 pulls in ashpd to ask
+          # whether the process is sandboxed, and ashpd is Unix-only --
+          # `std::os::unix`, `std::os::fd` and `zbus::zvariant::Fd` do not
+          # exist there, so the dependency fails to compile before any crate of
+          # ours is reached:
+          #
+          #   error[E0433]: cannot find `unix` in `os`
+          #   error[E0432]: unresolved import `std::os::fd`
+          #   error: could not compile `ashpd` (lib) due to 4 previous errors
+          #
+          # Nothing in the toolchain is at fault, so there is nothing to fix
+          # here -- only a platform to stop asking for.
+          - platform: x64-mingw-ucrt
+          - platform: aarch64-mingw-ucrt
     steps:
       - uses: actions/checkout@v4
 

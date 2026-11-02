@@ -26,7 +26,8 @@ describe Oo7::Keyring do
     let(:run) {"#{MARKER}-#{Process.pid}-#{rand(1 << 32)}"}
     let(:attributes) {{"xdg:schema" => MARKER, "run" => run}}
 
-    def after
+    # Sus::Base#after is handed the error the example raised, if any.
+    def after(error = nil)
       Oo7::Keyring.new.tap(&:unlock).delete({"xdg:schema" => MARKER, "run" => run})
     rescue StandardError
       nil

@@ -30,6 +30,16 @@
     };
     version = "2.2.1";
   };
+  oo7 = {
+    dependencies = ["gem_kit" "rb_sys"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      path = ./.;
+      type = "path";
+    };
+    version = "1.0.0";
+  };
   rake = {
     groups = ["default" "development"];
     platforms = [];
@@ -91,15 +101,5 @@
       type = "gem";
     };
     version = "1.5.0";
-  };
-  oo7 = {
-    dependencies = ["gem_kit" "rb_sys"];
-    groups = ["default"];
-    platforms = [];
-    source = {
-      path = ./.;
-      type = "path";
-    };
-    version = "0.1.0";
   };
 }
