@@ -76,6 +76,29 @@ raise a prompt therefore belongs on a Ruby thread rather than on a GTK main
 loop — otherwise the loop that owes the prompt a reply is the one being
 blocked.
 
+## Example
+
+`examples/gtk` is a GTK4 window that stores, reads and deletes a secret without
+ever stopping. It has its own flake, because the shell above carries the Rust
+toolchain and none of the GTK stack and this one is the other way round:
+
+```
+nix develop --command rake compile      # in the repository root
+cd examples/gtk && nix develop
+ruby main.rb
+```
+
+Every call is on a thread and only the label update comes back through
+`GLib::Idle`, which is ordinary GTK practice. The ticking counter is what makes
+the point: it is driven by a timeout on the main loop, so it only advances while
+that loop is running. Press a button and watch it keep going.
+
+Ordinary GTK practice is not sufficient on its own, which is the other half of
+why this gem exists. The GVL is global, so a worker thread that blocks while
+holding it stops the main thread as surely as calling on the main thread would.
+oo7 releases it; an extension that does not would make the thread pure
+decoration. `test/oo7/concurrency.rb` is the guard.
+
 ## Development
 
 ```
